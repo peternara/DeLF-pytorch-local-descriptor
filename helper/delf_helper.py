@@ -48,8 +48,9 @@ def CalculateReceptiveBoxes(height,
         rf_boxes: [N, 4] recpetive boxes tensor. (N = height x weight).
         each box is represented by [ymin, xmin, ymax, xmax].
     '''
-    coordinates = GenerateCoordinates(h=height,
-                                      w=width)
+    # coordinates > [h*w, 2] FloatTensor 
+    coordinates = GenerateCoordinates(h=height, w=width)
+    
     # create [ymin, xmin, ymax, xmax]
     point_boxes = torch.cat([coordinates, coordinates], dim=1)
     bias = torch.FloatTensor([-padding, -padding, -padding + rf - 1, -padding + rf - 1])
@@ -251,14 +252,20 @@ def GetDelfFeatureFromSingleScale(
     new_h = int(round(x.size(2)*scale))
     new_w = int(round(x.size(3)*scale))
     scaled_x = F.upsample(x, size=(new_h, new_w), mode='bilinear')
+    
+    # scaled_features > feature map
+    # scaled_scores > attention score > SpatialAttention2d 크래스의 결과 = 1xhxw
     scaled_features, scaled_scores = model.forward_for_serving(scaled_x)
 
     # save original size attention (used for attention visualization.)
     selected_original_scale_attn = None
     if scale == 1.0:
+        # Clamp all elements in input into the range [ min, max ] and return a resulting tensor:
+        # input : scaled_scores*255, min:0, max: 255
         selected_original_scale_attn = torch.clamp(scaled_scores*255, 0, 255) # 1 1 h w
         
-    # calculate receptive field boxes.
+    # calculate receptive field boxes. 
+    #   각 coordinate의 [ymin, xmin, ymax, xmax] == rf_boxes
     rf_boxes = CalculateReceptiveBoxes(
         height=scaled_features.size(2),
         width=scaled_features.size(3),
@@ -267,9 +274,10 @@ def GetDelfFeatureFromSingleScale(
         padding=padding)
     
     # re-projection back to original image space.
-    rf_boxes = rf_boxes / scale
-    scaled_scores = scaled_scores.view(-1)
-    scaled_features = scaled_features.view(scaled_features.size(1), -1).t()
+    rf_boxes        = rf_boxes / scale    
+    scaled_scores   = scaled_scores.view(-1)
+    # ?
+    scaled_features = scaled_features.view(scaled_features.size(1), -1).t() 
 
     # do post-processing for dimension reduction by PCA.
     scaled_features = DelfFeaturePostProcessing(
