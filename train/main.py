@@ -73,11 +73,11 @@ def main():
     # load model
     from delf import Delf_V1
     model = Delf_V1(
-        ncls = config.ncls,
-        load_from = config.load_from,
-        arch = config.arch,
-        stage = config.stage,
-        target_layer = config.target_layer,
+        ncls                     = config.ncls,
+        load_from                = config.load_from,
+        arch                     = config.arch,
+        stage                    = config.stage,
+        target_layer             = config.target_layer,
         use_random_gamma_rescale = config.use_random_gamma_rescale)
 
     # solver
@@ -95,13 +95,13 @@ def main():
                 float(epoch) / epochs,
                 config.train_path_for_pretraining))
             train_loader = train_loader_pt
-            val_loader = val_loader_pt
+            val_loader   = val_loader_pt
         else:
             print('[{:.1f}] load finetune dataset: {}'.format(
                 float(epoch) / epochs,
                 config.train_path_for_finetuning))
             train_loader = train_loader_ft
-            val_loader = val_loader_ft
+            val_loader   = val_loader_ft
 
         solver.train('train', epoch, train_loader, val_loader)
         solver.train('val', epoch, train_loader, val_loader)
