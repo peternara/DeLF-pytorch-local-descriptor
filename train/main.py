@@ -47,6 +47,7 @@ def main():
         sample_size = config.keypoint_sample_size
         crop_size   = config.keypoint_crop_size
    
+    '''
     # dataloader for pretrain
     train_loader_pt, val_loader_pt = get_loader(
         train_path       = config.train_path_for_pretraining,
@@ -68,7 +69,36 @@ def main():
         sample_size      = sample_size,
         crop_size        = crop_size,
         workers          = config.workers)
-    
+    '''
+
+    if args.dataset_type==0:   list_loader = ListLoader( args.dataset_root, type=args.dataset_type) 
+    elif args.dataset_type==1: list_loader = ListLoader( args.dataset_root, file_name=args.dataset_path, type=args.dataset_type)
+
+    num_classes = list_loader.num_classes 
+    num_images  = sum(list_loader.category_count.values())
+    print ('num_classes : ', num_classes)
+    print ('image_size  : ', num_images)
+
+    label_output = os.path.join( args.dataset_root, 'labelmap.csv')    
+    print ('classifcation label Info > labelmap.csv : ', label_output)
+    list_loader.export_labelmap(path=label_output)    
+    image_list, train_indices, eval_indices = list_loader.image_indices()
+
+    train_image_tranform = augmentation_base(args.backbone, aug_type='train')
+    test_image_tranform  = augmentation_base(args.backbone, aug_type='val')
+     
+    train_set = PulsClassificationDataset(image_list, train_indices, list_loader.multiples(), transform=train_image_tranform, data_type='train')
+    eval_set  = PulsClassificationDataset(image_list, eval_indices, list_loader.multiples(), transform=test_image_tranform, data_type='val') 
+    print('train set: {} vs eval set: {}'.format(len(train_set), len(eval_set)))
+
+    train_loader_ft = data.DataLoader(train_set, args.batch_size, num_workers=cfg['data_loader_num_workers'],
+                                   shuffle=True, pin_memory=True,
+                                   collate_fn=PulsClassificationDataset.my_collate)
+    val_loader_ft = data.DataLoader(eval_set, args.batch_size//4, num_workers=cfg['data_loader_num_workers'],
+                                  shuffle=False, pin_memory=True,
+                                  collate_fn=PulsClassificationDataset.my_collate)
+
+
 
     # load model
     from delf import Delf_V1
