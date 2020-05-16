@@ -42,31 +42,32 @@ def main():
     from dataloader import get_loader
     if config.stage in ['finetune']:
         sample_size = config.finetune_sample_size
-        crop_size = config.finetune_crop_size
+        crop_size   = config.finetune_crop_size
     elif config.stage in ['keypoint']:
         sample_size = config.keypoint_sample_size
-        crop_size = config.keypoint_crop_size
+        crop_size   = config.keypoint_crop_size
    
     # dataloader for pretrain
     train_loader_pt, val_loader_pt = get_loader(
-        train_path = config.train_path_for_pretraining,
-        val_path = config.val_path_for_pretraining,
-        stage = config.stage,
+        train_path       = config.train_path_for_pretraining,
+        val_path         = config.val_path_for_pretraining,
+        stage            = config.stage,
         train_batch_size = config.train_batch_size,
-        val_batch_size = config.val_batch_size,
-        sample_size = sample_size,
-        crop_size = crop_size,
-        workers = config.workers)
+        val_batch_size   = config.val_batch_size,
+        sample_size      = sample_size,
+        crop_size        = crop_size,
+        workers          = config.workers)
+
     # dataloader for finetune
     train_loader_ft, val_loader_ft = get_loader(
-        train_path = config.train_path_for_finetuning,
-        val_path = config.val_path_for_finetuning,
-        stage = config.stage,
+        train_path       = config.train_path_for_finetuning,
+        val_path         = config.val_path_for_finetuning,
+        stage            = config.stage,
         train_batch_size = config.train_batch_size,
-        val_batch_size = config.val_batch_size,
-        sample_size = sample_size,
-        crop_size = crop_size,
-        workers = config.workers)
+        val_batch_size   = config.val_batch_size,
+        sample_size      = sample_size,
+        crop_size        = crop_size,
+        workers          = config.workers)
     
 
     # load model
