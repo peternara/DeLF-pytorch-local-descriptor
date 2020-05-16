@@ -127,6 +127,8 @@ def main():
         epochs = config.keypoint_epoch
 
     # train/test for N-epochs. (50%: pretain with datasetA, 50%: finetune with datasetB)
+    config.train_path_for_pretraining = dataset_root
+    
     for epoch in range(epochs):
         if epoch < int(epochs * 0.5):
             print('[{:.1f}] load pretrain dataset: {}'.format(

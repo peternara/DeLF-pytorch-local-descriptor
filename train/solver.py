@@ -124,7 +124,12 @@ class Solver(object):
         since = time.time()
         bar   = Bar('[{}]{}'.format(mode.upper(), self.title), max=len(dataloader))
 
-        for batch_idx, (inputs, labels) in enumerate(dataloader):
+        for batch_idx, (inputs, labels, image_paths) in enumerate(dataloader):
+
+            print(inputs.shape)
+            print(labels.shape)
+            print(image_paths)
+
             # measure data loading time
             data_timer.update(time.time() - since)
             
@@ -203,9 +208,9 @@ class Solver(object):
             print('best_acc={}, new_best_acc={}'.format(self.best_acc, prec_top1.avg))
             self.best_acc = prec_top1.avg
             state = {
-                'epoch': self.epoch,
-                'acc': self.best_acc,
-                'optimizer': self.optimizer.state_dict(),
+                'epoch'     : self.epoch,
+                'acc'       : self.best_acc,
+                'optimizer' : self.optimizer.state_dict(),
             }
             self.model.write_to(state)
             filename = 'bestshot.pth.tar'
