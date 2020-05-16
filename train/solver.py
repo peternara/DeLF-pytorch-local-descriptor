@@ -111,18 +111,19 @@ class Solver(object):
         mode: train / val
         '''
         batch_timer = AverageMeter()
-        data_timer = AverageMeter()
+        data_timer  = AverageMeter()
         prec_losses = AverageMeter()
-        prec_top1 = AverageMeter()
-        prec_top3 = AverageMeter()
-        prec_top5 = AverageMeter()
+        prec_top1   = AverageMeter()
+        prec_top3   = AverageMeter()
+        prec_top5   = AverageMeter()
         
         if mode in ['val']:
             pass;
             #confusion_matrix = ConusionMeter()
         
         since = time.time()
-        bar = Bar('[{}]{}'.format(mode.upper(), self.title), max=len(dataloader))
+        bar   = Bar('[{}]{}'.format(mode.upper(), self.title), max=len(dataloader))
+
         for batch_idx, (inputs, labels) in enumerate(dataloader):
             # measure data loading time
             data_timer.update(time.time() - since)
@@ -143,7 +144,7 @@ class Solver(object):
             
             # forward
             outputs = self.model(inputs)
-            loss = self.criterion(outputs, labels)
+            loss    = self.criterion(outputs, labels)
             
             # backward + optimize
             if mode in ['train']:
@@ -156,6 +157,7 @@ class Solver(object):
                 __to_tensor__(outputs),
                 __to_tensor__(labels),
                 top_k=(1,3,5))
+                
             batch_size = inputs.size(0)
             prec_losses.update(__to_tensor__(loss)[0], batch_size)
             prec_top1.update(prec_1[0], batch_size)
@@ -172,18 +174,18 @@ class Solver(object):
                         'top3: {top3:.4f} | top5: {top5:.4f} | eta: ' +
                         '(data:{dt:.3f}s),(batch:{bt:.3f}s),(total:{tt:})') \
                         .format(
-                            mode=mode,
-                            epoch=self.epoch+1,
-                            batch=batch_idx+1,
-                            size=len(dataloader),
-                            lr=self.lr_scheduler.get_lr()[0],
-                            loss=prec_losses.avg,
-                            top1=prec_top1.avg,
-                            top3=prec_top3.avg,
-                            top5=prec_top5.avg,
-                            dt=data_timer.val,
-                            bt=batch_timer.val,
-                            tt=bar.elapsed_td)
+                            mode  = mode,
+                            epoch = self.epoch+1,
+                            batch = batch_idx+1,
+                            size  = len(dataloader),
+                            lr    = self.lr_scheduler.get_lr()[0],
+                            loss  = prec_losses.avg,
+                            top1  = prec_top1.avg,
+                            top3  = prec_top3.avg,
+                            top5  = prec_top5.avg,
+                            dt    = data_timer.val,
+                            bt    = batch_timer.val,
+                            tt    = bar.elapsed_td)
             print(log_msg)
             bar.next()
         bar.finish()
