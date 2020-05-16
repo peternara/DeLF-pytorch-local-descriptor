@@ -36,14 +36,14 @@ def __to_tensor__(x):
 
 class Solver(object):
     def __init__(self, config, model):
-        self.state = {k: v for k, v in config._get_kwargs()} 
-        self.config = config
-        self.epoch = 0          # global epoch.
+        self.state    = {k: v for k, v in config._get_kwargs()} 
+        self.config   = config
+        self.epoch    = 0          # global epoch.
         self.best_acc = 0       # global best accuracy.
-        self.prefix = os.path.join('repo', config.expr)
+        self.prefix   = os.path.join('repo', config.expr)
         
         # ship model to cuda
-        self.model = __cuda__(model)
+        self.model    = __cuda__(model)
 
         # define criterion and optimizer
         self.criterion = nn.CrossEntropyLoss()
