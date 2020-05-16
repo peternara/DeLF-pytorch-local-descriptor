@@ -126,9 +126,9 @@ class Solver(object):
 
         for batch_idx, (inputs, labels, image_paths) in enumerate(dataloader):
 
-            print(inputs.shape)
-            print(labels.shape)
-            print(image_paths)
+            #print(inputs.shape)
+            #print(labels.shape)
+            #print(image_paths)
 
             # measure data loading time
             data_timer.update(time.time() - since)
@@ -150,6 +150,8 @@ class Solver(object):
             # forward
             outputs = self.model(inputs)
             loss    = self.criterion(outputs, labels)
+
+            #print('loss : ', loss)
             
             # backward + optimize
             if mode in ['train']:
@@ -164,10 +166,12 @@ class Solver(object):
                 top_k=(1,3,5))
                 
             batch_size = inputs.size(0)
-            prec_losses.update(__to_tensor__(loss)[0], batch_size)
-            prec_top1.update(prec_1[0], batch_size)
-            prec_top3.update(prec_3[0], batch_size)
-            prec_top5.update(prec_5[0], batch_size)
+
+            #prec_losses.update(__to_tensor__(loss)[0], batch_size)
+            prec_losses.update(__to_tensor__(loss), batch_size)
+            prec_top1.update(prec_1, batch_size)
+            prec_top3.update(prec_3, batch_size)
+            prec_top5.update(prec_5, batch_size)
             
             # measure elapsed time
             batch_timer.update(time.time() - since)
