@@ -63,12 +63,12 @@ class Solver(object):
         # decay learning rate by a factor of 0.5 every 10 epochs
         self.lr_scheduler = optim.lr_scheduler.StepLR(
             self.optimizer,
-            step_size=config.lr_stepsize, 
-            gamma=config.lr_gamma)
+            step_size = config.lr_stepsize, 
+            gamma     = config.lr_gamma)
 
         # create directory to save result if not exist.
-        self.ckpt_path = os.path.join(self.prefix, config.stage, 'ckpt')
-        self.log_path = os.path.join(self.prefix, config.stage, 'log')
+        self.ckpt_path  = os.path.join(self.prefix, config.stage, 'ckpt')
+        self.log_path   = os.path.join(self.prefix, config.stage, 'log')
         self.image_path = os.path.join(self.prefix, config.stage, 'image')
         mkdir_p(self.ckpt_path)
         mkdir_p(self.log_path)
