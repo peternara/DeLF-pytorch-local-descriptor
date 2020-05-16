@@ -217,8 +217,9 @@ class Solver(object):
             self.__save_checkpoint__(state, ckpt=self.ckpt_path, filename=filename)
 
 
-    def train(self, mode, epoch, train_loader, val_loader):
+    def train(self, mode, epoch, train_loader, val_loader):      
         self.epoch = epoch
+
         if mode in ['train']:
             self.model.train()
             self.lr_scheduler.step()
@@ -227,6 +228,7 @@ class Solver(object):
             assert mode == 'val'
             self.model.eval()
             dataloader = val_loader
+
         self.__solve__(mode, epoch, dataloader)
 
 
