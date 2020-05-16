@@ -17,6 +17,9 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models
 
+from classification_dataset import PulsClassificationDataset, ListLoader, IMAGE_SHAPE
+from augment_base import *
+
 from config import config
 
 
@@ -71,32 +74,37 @@ def main():
         workers          = config.workers)
     '''
 
-    if args.dataset_type==0:   list_loader = ListLoader( args.dataset_root, type=args.dataset_type) 
-    elif args.dataset_type==1: list_loader = ListLoader( args.dataset_root, file_name=args.dataset_path, type=args.dataset_type)
+    dataset_root = '/content/drive/My Drive/DataSet/Landmark/landmarks_clean_train/'
+    dataset_type = 0
+    if dataset_type==0:   list_loader = ListLoader( dataset_root, type=dataset_type) 
+    elif dataset_type==1: list_loader = ListLoader( dataset_root, file_name=args.dataset_path, type=dataset_type)
 
     num_classes = list_loader.num_classes 
+    config.ncls = num_classes
+
     num_images  = sum(list_loader.category_count.values())
     print ('num_classes : ', num_classes)
     print ('image_size  : ', num_images)
 
-    label_output = os.path.join( args.dataset_root, 'labelmap.csv')    
+    label_output = os.path.join( dataset_root, 'labelmap.csv')    
     print ('classifcation label Info > labelmap.csv : ', label_output)
     list_loader.export_labelmap(path=label_output)    
     image_list, train_indices, eval_indices = list_loader.image_indices()
 
-    train_image_tranform = augmentation_base(args.backbone, aug_type='train')
-    test_image_tranform  = augmentation_base(args.backbone, aug_type='val')
+    backbone = 'resnet50'
+    train_image_tranform = augmentation_base(backbone, aug_type='train')
+    test_image_tranform  = augmentation_base(backbone, aug_type='val')
      
     train_set = PulsClassificationDataset(image_list, train_indices, list_loader.multiples(), transform=train_image_tranform, data_type='train')
     eval_set  = PulsClassificationDataset(image_list, eval_indices, list_loader.multiples(), transform=test_image_tranform, data_type='val') 
     print('train set: {} vs eval set: {}'.format(len(train_set), len(eval_set)))
 
-    train_loader_ft = data.DataLoader(train_set, args.batch_size, num_workers=cfg['data_loader_num_workers'],
+    train_loader_ft = data.DataLoader(train_set, config.train_batch_size, num_workers=config.workers,
                                    shuffle=True, pin_memory=True,
                                    collate_fn=PulsClassificationDataset.my_collate)
-    val_loader_ft = data.DataLoader(eval_set, args.batch_size//4, num_workers=cfg['data_loader_num_workers'],
-                                  shuffle=False, pin_memory=True,
-                                  collate_fn=PulsClassificationDataset.my_collate)
+    val_loader_ft   = data.DataLoader(eval_set,config.val_batch_size, num_workers=config.workers,
+                                   shuffle=False, pin_memory=True,
+                                   collate_fn=PulsClassificationDataset.my_collate)
 
 
 
