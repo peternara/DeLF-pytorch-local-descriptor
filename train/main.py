@@ -99,10 +99,10 @@ def main():
     eval_set  = PulsClassificationDataset(image_list, eval_indices, list_loader.multiples(), transform=test_image_tranform, data_type='val') 
     print('train set: {} vs eval set: {}'.format(len(train_set), len(eval_set)))
 
-    train_loader_ft = data.DataLoader(train_set, config.train_batch_size, num_workers=config.workers,
+    train_loader_pt = data.DataLoader(train_set, config.train_batch_size, num_workers=config.workers,
                                    shuffle=True, pin_memory=True,
                                    collate_fn=PulsClassificationDataset.my_collate)
-    val_loader_ft   = data.DataLoader(eval_set,config.val_batch_size, num_workers=config.workers,
+    val_loader_pt   = data.DataLoader(eval_set,config.val_batch_size, num_workers=config.workers,
                                    shuffle=False, pin_memory=True,
                                    collate_fn=PulsClassificationDataset.my_collate)
 
