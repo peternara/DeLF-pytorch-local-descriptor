@@ -204,9 +204,10 @@ class Delf_V1(nn.Module):
         '''
         h, w = x.size(2), x.size(3)
         assert w == h, 'input must be square image.'
-        gamma = random.uniform(min_scale, max_scale)
+        
+        gamma        = random.uniform(min_scale, max_scale)
         new_h, new_w = int(h*gamma), int(w*gamma)
-        x = F.upsample(x, size=(new_h, new_w), mode='bilinear')
+        x            = F.upsample(x, size=(new_h, new_w), mode='bilinear')
         return x
 
     def get_endpoints(self):
@@ -217,14 +218,14 @@ class Delf_V1(nn.Module):
 
     def write_to(self, state):
         if self.stage in ['finetune']:
-            state['base'] = self.module_dict['base'].state_dict()
+            state['base']   = self.module_dict['base'].state_dict()
             state['layer4'] = self.module_dict['layer4'].state_dict()
-            state['pool'] = self.module_dict['pool'].state_dict()
+            state['pool']   = self.module_dict['pool'].state_dict()
             state['logits'] = self.module_dict['logits'].state_dict()
         elif self.stage in ['keypoint']:
-            state['base'] = self.module_dict['base'].state_dict()
-            state['attn'] = self.module_dict['attn'].state_dict()
-            state['pool'] = self.module_dict['pool'].state_dict()
+            state['base']   = self.module_dict['base'].state_dict()
+            state['attn']   = self.module_dict['attn'].state_dict()
+            state['pool']   = self.module_dict['pool'].state_dict()
             state['logits'] = self.module_dict['logits'].state_dict()
         else:
             assert self.stage in ['inference']
