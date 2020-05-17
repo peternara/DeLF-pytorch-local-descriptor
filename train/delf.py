@@ -204,7 +204,7 @@ class Delf_V1(nn.Module):
         '''
         h, w = x.size(2), x.size(3)
         assert w == h, 'input must be square image.'
-        
+
         gamma        = random.uniform(min_scale, max_scale)
         new_h, new_w = int(h*gamma), int(w*gamma)
         x            = F.upsample(x, size=(new_h, new_w), mode='bilinear')
@@ -249,11 +249,13 @@ class Delf_V1(nn.Module):
         return ret_x.data.cpu(), ret_s.data.cpu()
 
     def forward(self, x):
+        print(self.stage, ' : ',  x.shape)
         if self.stage in ['finetune']:
             x = self.__forward_and_save__(x, 'base')
             x = self.__forward_and_save__(x, 'layer4')
             x = self.__forward_and_save__(x, 'pool')
             x = self.__forward_and_save__(x, 'logits')
+
         elif self.stage in ['keypoint']:
             if self.use_random_gamma_rescale:
                 x = self.__gamma_rescale__(x)
