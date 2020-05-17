@@ -37,6 +37,8 @@ def init_params(net):
 
 def get_mean_and_std(dataset):
     '''Compute the mean and std value of dataset.'''
+
+    print('get_mean_and_std')
     dataloader = trainloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=2)
 
     mean = torch.zeros(3)
@@ -45,18 +47,18 @@ def get_mean_and_std(dataset):
     for inputs, targets in dataloader:
         for i in range(3):
             mean[i] += inputs[:,i,:,:].mean()
-            std[i] += inputs[:,i,:,:].std()
+            std[i]  += inputs[:,i,:,:].std()
     mean.div_(len(dataset))
     std.div_(len(dataset))
     return mean, std
 
 def compute_precision_top_k(output, target, top_k=(1,)):
     """Computes the precision@k for the specified values of k"""
-    maxk = max(top_k)
+    maxk       = max(top_k)
     batch_size = target.size(0)
 
     _, pred = output.topk(maxk, 1, True, True)
-    pred = pred.t()
+    pred    = pred.t()
     correct = pred.eq(target.view(1, -1).expand_as(pred))
 
     res = []

@@ -98,8 +98,8 @@ class Solver(object):
         '''
         if not range_from == range_to:
             scale = float(range_to[1]-range_to[0])/float(range_from[1]-range_from[0])
-            bias = range_to[0]-range_from[0]*scale
-            x = x.mul(scale).add(bias)
+            bias  = range_to[0]-range_from[0]*scale
+            x     = x.mul(scale).add(bias)
             return x
 
     def __save_checkpoint__(self, state, ckpt='ckpt', filename='checkpoint.pth.tar'):

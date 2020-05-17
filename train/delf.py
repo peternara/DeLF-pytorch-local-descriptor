@@ -249,7 +249,9 @@ class Delf_V1(nn.Module):
         return ret_x.data.cpu(), ret_s.data.cpu()
 
     def forward(self, x):
-        print(self.stage, ' : ',  x.shape)
+
+        #print(self.stage, ' : ',  x.shape)
+
         if self.stage in ['finetune']:
             x = self.__forward_and_save__(x, 'base')
             x = self.__forward_and_save__(x, 'layer4')
