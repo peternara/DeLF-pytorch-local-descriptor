@@ -85,23 +85,23 @@ class Delf_V1(nn.Module):
 
         super(Delf_V1, self).__init__()
 
-        self.arch = arch
-        self.stage = stage
-        self.target_layer = target_layer
-        self.load_from = load_from
+        self.arch                     = arch
+        self.stage                    = stage
+        self.target_layer             = target_layer
+        self.load_from                = load_from
         self.use_random_gamma_rescale = use_random_gamma_rescale
 
         self.module_list = nn.ModuleList()
         self.module_dict = {}
-        self.end_points = {}
+        self.end_points  = {}
 
         in_c = self.__get_in_c__()
         if self.stage in ['finetune']:
             use_pretrained_base = True
-            exclude = ['avgpool', 'fc']
+            exclude             = ['avgpool', 'fc']
 
         elif self.stage in ['keypoint']:
-            use_pretrained_base = False
+            use_pretrained_base            = False
             self.use_l2_normalized_feature = True
             if self.target_layer in ['layer3']:
                 exclude = ['layer4', 'avgpool', 'fc']
@@ -110,8 +110,9 @@ class Delf_V1(nn.Module):
 
         else:
             assert self.stage in ['inference']
-            use_pretrained_base = False
+            use_pretrained_base            = False
             self.use_l2_normalized_feature = True
+
             if self.target_layer in ['layer3']:
                 exclude = ['layer4', 'avgpool', 'fc']
             if self.target_layer in ['layer4']:
@@ -120,9 +121,9 @@ class Delf_V1(nn.Module):
         if self.arch in ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']:
             print('[{}] loading {} pretrained ImageNet weights ... It may take few seconds...'
                     .format(self.stage, self.arch))
-            module = models.__dict__[self.arch](pretrained=use_pretrained_base)
+            module            = models.__dict__[self.arch](pretrained=use_pretrained_base)
             module_state_dict = __deep_copy_module__(module, exclude=exclude)
-            module = None
+            module            = None
 
             # endpoint: base
             submodules = []

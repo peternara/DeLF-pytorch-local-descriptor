@@ -107,7 +107,6 @@ def main():
                                    collate_fn=PulsClassificationDataset.my_collate)
 
 
-
     # load model
     from delf import Delf_V1
     model = Delf_V1(
