@@ -81,7 +81,7 @@ def main():
 
     num_classes = list_loader.num_classes 
     config.ncls = num_classes
-
+    
     num_images  = sum(list_loader.category_count.values())
     print ('num_classes : ', num_classes)
     print ('image_size  : ', num_images)

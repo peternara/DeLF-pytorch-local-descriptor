@@ -24,10 +24,13 @@ parser.add_argument('--manualSeed',
                     default=int(time.time()), 
                     help='manual seed')
 # Experiment
+'''
 parser.add_argument('--expr', 
                     default='devel', 
                     type=str, 
                     help='experiment name')
+'''
+
 parser.add_argument('--load_from', 
                     default='dummy',
                     type=str, 
@@ -37,6 +40,7 @@ parser.add_argument('--stage',
                     default='finetune', 
                     type=str, 
                     help='target stage: finetune | keypoint')
+                    
 parser.add_argument('--train_path_for_pretraining', 
                     default='../../data/landmarks/landmarks_full_train', 
                     type=str)

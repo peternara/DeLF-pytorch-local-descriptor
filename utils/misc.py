@@ -19,7 +19,6 @@ from torch.autograd import Variable
 __all__ = ['get_mean_and_std', 'init_params', 'mkdir_p', 'AverageMeter', 'compute_precision_top_k']
 
 
-
 def init_params(net):
     '''Init layer parameters.'''
     for m in net.modules():
@@ -35,6 +34,7 @@ def init_params(net):
             if m.bias:
                 init.constant(m.bias, 0)
 
+# not used
 def get_mean_and_std(dataset):
     '''Compute the mean and std value of dataset.'''
 

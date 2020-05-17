@@ -40,7 +40,7 @@ class Solver(object):
         self.config   = config
         self.epoch    = 0          # global epoch.
         self.best_acc = 0       # global best accuracy.
-        self.prefix   = os.path.join('repo', config.expr)
+        self.prefix   = '/content/drive/My Drive/colab_model/pytorch_delf' #os.path.join('repo', config.expr)
         
         # ship model to cuda
         self.model    = __cuda__(model)
@@ -67,9 +67,13 @@ class Solver(object):
             gamma     = config.lr_gamma)
 
         # create directory to save result if not exist.
+        # config.stage  = finetune | keypoint'
         self.ckpt_path  = os.path.join(self.prefix, config.stage, 'ckpt')
         self.log_path   = os.path.join(self.prefix, config.stage, 'log')
         self.image_path = os.path.join(self.prefix, config.stage, 'image')
+
+        print(self.ckpt_path, self.log_path, self.image_path)
+
         mkdir_p(self.ckpt_path)
         mkdir_p(self.log_path)
         mkdir_p(self.image_path)
@@ -89,13 +93,15 @@ class Solver(object):
         self.val_logger.close()
 
 
-    def __adjust_pixel_range__(self, 
-                             x,
-                             range_from=[0,1],
-                             range_to=[-1,1]):
+    # finteued  > not used
+    # keypoint  > 아직 모름.
+    def __adjust_pixel_range__(self, x, range_from=[0,1],range_to=[-1,1]):
         '''
         adjust pixel range from <range_from> to <range_to>.
         '''
+        
+        print('__adjust_pixel_range__')
+
         if not range_from == range_to:
             scale = float(range_to[1]-range_to[0])/float(range_from[1]-range_from[0])
             bias  = range_to[0]-range_from[0]*scale
